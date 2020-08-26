@@ -38,7 +38,13 @@ public class HdfsFileProvider extends AbstractOriginatingFileProvider {
 
     static final Collection<Capability> CAPABILITIES = Collections
             .unmodifiableCollection(Arrays.asList(new Capability[] { Capability.GET_TYPE, Capability.READ_CONTENT,
-                    Capability.URI, Capability.GET_LAST_MODIFIED, Capability.ATTRIBUTES, Capability.RANDOM_ACCESS_READ,
+                    Capability.CREATE,
+                    Capability.DELETE,
+                    Capability.RENAME,
+                    Capability.WRITE_CONTENT,
+                    Capability.URI, Capability.GET_LAST_MODIFIED,
+                    Capability.SET_LAST_MODIFIED_FILE,
+                    Capability.ATTRIBUTES, Capability.RANDOM_ACCESS_READ,
                     Capability.DIRECTORY_READ_CONTENT, Capability.LIST_CHILDREN }));
 
     /**
