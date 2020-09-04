@@ -59,7 +59,7 @@ public class HdfsFileSystem extends AbstractFileSystem {
     }
 
     /**
-     * @see AbstractFileSystem#addCapabilities(Collection)
+     * @see org.apache.commons.vfs2.provider.AbstractFileSystem#addCapabilities(Collection)
      */
     @Override
     protected void addCapabilities(final Collection<Capability> capabilities) {
@@ -67,7 +67,7 @@ public class HdfsFileSystem extends AbstractFileSystem {
     }
 
     /**
-     * @see AbstractFileSystem#close()
+     * @see org.apache.commons.vfs2.provider.AbstractFileSystem#close()
      */
     @Override
     public void close() {
@@ -82,7 +82,7 @@ public class HdfsFileSystem extends AbstractFileSystem {
     }
 
     /**
-     * @see AbstractFileSystem#createFile(AbstractFileName)
+     * @see org.apache.commons.vfs2.provider.AbstractFileSystem#createFile(AbstractFileName)
      */
     @Override
     protected FileObject createFile(final AbstractFileName name) throws Exception {

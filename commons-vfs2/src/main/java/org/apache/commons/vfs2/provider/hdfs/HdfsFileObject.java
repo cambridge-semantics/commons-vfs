@@ -62,7 +62,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see AbstractFileObject#canRenameTo(FileObject)
+     * @see org.apache.commons.vfs2.provider.AbstractFileObject#canRenameTo(org.apache.commons.vfs2.FileObject)
      */
     @Override
     public boolean canRenameTo(final FileObject newfile) {
@@ -70,7 +70,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see AbstractFileObject#doAttach()
+     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doAttach()
      */
     @Override
     protected void doAttach() throws Exception {
@@ -83,7 +83,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see AbstractFileObject#doGetAttributes()
+     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doGetAttributes()
      */
     @Override
     protected Map<String, Object> doGetAttributes() throws Exception {
@@ -102,7 +102,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see AbstractFileObject#doGetContentSize()
+     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doGetContentSize()
      */
     @Override
     protected long doGetContentSize() throws Exception {
@@ -110,7 +110,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see AbstractFileObject#doGetInputStream(int)
+     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doGetInputStream(int)
      */
     @Override
     protected InputStream doGetInputStream(final int bufferSize) throws Exception {
@@ -118,7 +118,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see AbstractFileObject#doGetLastModifiedTime()
+     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doGetLastModifiedTime()
      */
     @Override
     protected long doGetLastModifiedTime() throws Exception {
@@ -129,7 +129,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see AbstractFileObject#doGetRandomAccessContent
+     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doGetRandomAccessContent
      *      (org.apache.commons.vfs2.util.RandomAccessMode)
      */
     @Override
@@ -141,7 +141,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see AbstractFileObject#doGetType()
+     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doGetType()
      */
     @Override
     protected FileType doGetType() throws Exception {
@@ -160,7 +160,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see AbstractFileObject#doIsHidden()
+     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doIsHidden()
      */
     @Override
     protected boolean doIsHidden() throws Exception {
@@ -168,7 +168,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see AbstractFileObject#doIsReadable()
+     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doIsReadable()
      */
     @Override
     protected boolean doIsReadable() throws Exception {
@@ -176,7 +176,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see AbstractFileObject#doIsWriteable()
+     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doIsWriteable()
      */
     @Override
     protected boolean doIsWriteable() throws Exception {
@@ -184,7 +184,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see AbstractFileObject#doListChildren()
+     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doListChildren()
      */
     @Override
     protected String[] doListChildren() throws Exception {
@@ -202,7 +202,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see AbstractFileObject#doListChildrenResolved()
+     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doListChildrenResolved()
      */
     @Override
     protected FileObject[] doListChildrenResolved() throws Exception {
@@ -219,7 +219,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see AbstractFileObject#doRemoveAttribute(String)
+     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doRemoveAttribute(java.lang.String)
      */
     @Override
     protected void doRemoveAttribute(final String attrName) throws Exception {
@@ -227,7 +227,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see AbstractFileObject#doSetAttribute(String, Object)
+     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doSetAttribute(java.lang.String, java.lang.Object)
      */
     @Override
     protected void doSetAttribute(final String attrName, final Object value) throws Exception {
@@ -235,7 +235,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see AbstractFileObject#doSetLastModifiedTime(long)
+     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doSetLastModifiedTime(long)
      */
     @Override
     protected boolean doSetLastModifiedTime(final long modtime) throws Exception {
@@ -243,7 +243,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see AbstractFileObject#exists()
+     * @see org.apache.commons.vfs2.provider.AbstractFileObject#exists()
      * @return boolean true if file exists, false if not
      */
     @Override
