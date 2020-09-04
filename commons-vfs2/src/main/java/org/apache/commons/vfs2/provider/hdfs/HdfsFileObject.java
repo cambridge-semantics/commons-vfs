@@ -54,7 +54,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
      * @param p Path to the file in HDFS
      */
     protected HdfsFileObject(final AbstractFileName name, final HdfsFileSystem fs, final FileSystem hdfs,
-                             final Path p) {
+            final Path p) {
         super(name, fs);
         this.fs = fs;
         this.hdfs = hdfs;
@@ -62,7 +62,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see org.apache.commons.vfs2.provider.AbstractFileObject#canRenameTo(org.apache.commons.vfs2.FileObject)
+     * @see AbstractFileObject#canRenameTo(FileObject)
      */
     @Override
     public boolean canRenameTo(final FileObject newfile) {
@@ -70,7 +70,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doAttach()
+     * @see AbstractFileObject#doAttach()
      */
     @Override
     protected void doAttach() throws Exception {
@@ -83,7 +83,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doGetAttributes()
+     * @see AbstractFileObject#doGetAttributes()
      */
     @Override
     protected Map<String, Object> doGetAttributes() throws Exception {
@@ -102,7 +102,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doGetContentSize()
+     * @see AbstractFileObject#doGetContentSize()
      */
     @Override
     protected long doGetContentSize() throws Exception {
@@ -110,7 +110,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doGetInputStream(int)
+     * @see AbstractFileObject#doGetInputStream(int)
      */
     @Override
     protected InputStream doGetInputStream(final int bufferSize) throws Exception {
@@ -118,7 +118,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doGetLastModifiedTime()
+     * @see AbstractFileObject#doGetLastModifiedTime()
      */
     @Override
     protected long doGetLastModifiedTime() throws Exception {
@@ -129,7 +129,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doGetRandomAccessContent
+     * @see AbstractFileObject#doGetRandomAccessContent
      *      (org.apache.commons.vfs2.util.RandomAccessMode)
      */
     @Override
@@ -141,7 +141,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doGetType()
+     * @see AbstractFileObject#doGetType()
      */
     @Override
     protected FileType doGetType() throws Exception {
@@ -160,7 +160,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doIsHidden()
+     * @see AbstractFileObject#doIsHidden()
      */
     @Override
     protected boolean doIsHidden() throws Exception {
@@ -168,7 +168,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doIsReadable()
+     * @see AbstractFileObject#doIsReadable()
      */
     @Override
     protected boolean doIsReadable() throws Exception {
@@ -176,7 +176,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doIsWriteable()
+     * @see AbstractFileObject#doIsWriteable()
      */
     @Override
     protected boolean doIsWriteable() throws Exception {
@@ -184,7 +184,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doListChildren()
+     * @see AbstractFileObject#doListChildren()
      */
     @Override
     protected String[] doListChildren() throws Exception {
@@ -202,7 +202,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doListChildrenResolved()
+     * @see AbstractFileObject#doListChildrenResolved()
      */
     @Override
     protected FileObject[] doListChildrenResolved() throws Exception {
@@ -219,7 +219,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doRemoveAttribute(java.lang.String)
+     * @see AbstractFileObject#doRemoveAttribute(String)
      */
     @Override
     protected void doRemoveAttribute(final String attrName) throws Exception {
@@ -227,7 +227,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doSetAttribute(java.lang.String, java.lang.Object)
+     * @see AbstractFileObject#doSetAttribute(String, Object)
      */
     @Override
     protected void doSetAttribute(final String attrName, final Object value) throws Exception {
@@ -235,7 +235,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see org.apache.commons.vfs2.provider.AbstractFileObject#doSetLastModifiedTime(long)
+     * @see AbstractFileObject#doSetLastModifiedTime(long)
      */
     @Override
     protected boolean doSetLastModifiedTime(final long modtime) throws Exception {
@@ -243,7 +243,7 @@ public class HdfsFileObject extends AbstractFileObject<HdfsFileSystem> {
     }
 
     /**
-     * @see org.apache.commons.vfs2.provider.AbstractFileObject#exists()
+     * @see AbstractFileObject#exists()
      * @return boolean true if file exists, false if not
      */
     @Override
