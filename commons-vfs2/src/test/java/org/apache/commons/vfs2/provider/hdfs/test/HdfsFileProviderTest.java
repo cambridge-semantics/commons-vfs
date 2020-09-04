@@ -159,7 +159,7 @@ public class HdfsFileProviderTest {
         return f;
     }
 
-    @Test()
+    @Test(expected = UnsupportedOperationException.class)
     public void testCanRenameTo() throws Exception {
         final FileObject fo = createTestFile(hdfs);
         Assert.assertNotNull(fo);
@@ -286,7 +286,7 @@ public class HdfsFileProviderTest {
         // Create the test file
         final FileObject file = createTestFile(hdfs);
         Assert.assertTrue(fo.exists());
-        Assert.assertTrue(file.isWriteable());
+        Assert.assertFalse(file.isWriteable());
     }
 
     @Test
