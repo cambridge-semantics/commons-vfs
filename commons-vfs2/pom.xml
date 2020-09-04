@@ -185,6 +185,27 @@
 
   <properties>
     <vfs.parent.dir>${basedir}/..</vfs.parent.dir>
+    <commons.osgi.import>
+      org.apache.hadoop.*;resolution:=optional,
+      org.apache.jackrabbit.*;resolution:=optional,
+      org.apache.jackrabbit.webdav;resolution:=optional,
+      org.apache.jackrabbit.webdav.bind;resolution:=optional,
+      org.apache.jackrabbit.webdav.client.methods;resolution:=optional,
+      org.apache.jackrabbit.webdav.lock;resolution:=optional,
+      org.apache.jackrabbit.webdav.observation;resolution:=optional,
+      org.apache.jackrabbit.webdav.ordering;resolution:=optional,
+      org.apache.jackrabbit.webdav.property;resolution:=optional,
+      org.apache.jackrabbit.webdav.search;resolution:=optional,
+      org.apache.jackrabbit.webdav.version;resolution:=optional,
+      org.apache.jackrabbit.webdav.version.report;resolution:=optional,
+      org.apache.jackrabbit.webdav.xml;resolution:=optional,
+      org.apache.tools.ant.*;resolution:=optional,
+      org.apache.commons.httpclient.*;resolution:=optional,
+      org.apache.commons.logging;version=!,
+      org.apache.commons.vfs2.provider.webdav4;version="2.6.0";resolution:=optional,
+      org.apache.commons.vfs2.provider.webdav4s;version="2.6.0";resolution:=optional,
+      *
+    </commons.osgi.import>
   </properties>
 
   <build>
