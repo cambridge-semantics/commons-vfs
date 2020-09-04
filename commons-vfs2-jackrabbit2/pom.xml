@@ -112,6 +112,20 @@
     <commons.componentid>vfs2-jackrabbit2</commons.componentid>
     <commons.packageId>vfs2-jackrabbit2</commons.packageId>
     <commons.module.name>org.apache.commons.vfs2.jackrabbit2</commons.module.name>
+    <commons.osgi.import>
+      org.apache.hadoop.*;resolution:=optional,
+      org.apache.jackrabbit.*;resolution:=optional,
+      org.apache.tools.ant.*;resolution:=optional,
+      org.apache.commons.httpclient.*;resolution:=optional,
+      org.apache.commons.logging;version=!,
+      org.apache.commons.vfs2.provider;version=2.6.0,
+      org.apache.commons.vfs2.provider.http4;version="2.6.0",
+      org.apache.commons.vfs2.provider.http4s;version="2.6.0",
+      org.apache.commons.vfs2.provider.https;version="2.6.0",
+      org.apache.commons.vfs2.tasks;version="2.6.0",
+      org.apache.commons.vfs2.util;version="2.6.0",
+      *
+    </commons.osgi.import>
   </properties>
 
   <build>
