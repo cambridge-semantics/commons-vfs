@@ -376,7 +376,7 @@ public class Webdav4FileObject extends Http4FileObject<Webdav4FileSystem> {
 
                 request = new HttpPropfind(toUrlString(name), nameSet, DavConstants.DEPTH_1);
 
-                final HttpResponse res = executeRequest(request);
+                final HttpResponse res = executeRequest(request, false);
                 final List<Webdav4FileObject> vfs = new ArrayList<>();
                 if (request.succeeded(res)) {
                     final MultiStatusResponse[] responses = request.getResponseBodyAsMultiStatus(res).getResponses();
@@ -404,9 +404,7 @@ public class Webdav4FileObject extends Http4FileObject<Webdav4FileSystem> {
         } catch (final IOException e) {
             throw new FileSystemException(e.getMessage(), e);
         } finally {
-            if (request != null) {
-                request.releaseConnection();
-            }
+            releaseConnection(request);
         }
     }
 
@@ -427,6 +425,7 @@ public class Webdav4FileObject extends Http4FileObject<Webdav4FileSystem> {
      */
     @Override
     protected void doSetAttribute(final String attrName, final Object value) throws Exception {
+        HttpProppatch request = null;
         try {
             final GenericURLFileName fileName = (GenericURLFileName) getName();
             final String urlStr = toUrlString(fileName);
@@ -439,9 +438,9 @@ public class Webdav4FileObject extends Http4FileObject<Webdav4FileSystem> {
                 propertyNameSet.add(property.getName()); // remove property
             }
 
-            final HttpProppatch request = new HttpProppatch(urlStr, properties, propertyNameSet);
+            request = new HttpProppatch(urlStr, properties, propertyNameSet);
             setupRequest(request);
-            final HttpResponse response = executeRequest(request);
+            final HttpResponse response = executeRequest(request, false);
             if (!request.succeeded(response)) {
                 throw new FileSystemException("Property '" + attrName + "' could not be set.");
             }
@@ -449,10 +448,15 @@ public class Webdav4FileObject extends Http4FileObject<Webdav4FileSystem> {
             throw fse;
         } catch (final Exception e) {
             throw new FileSystemException("vfs.provider.webdav/set-attributes", e, getName(), attrName);
+        } finally {
+            releaseConnection(request);
         }
     }
 
     private HttpResponse executeRequest(final HttpUriRequest request) throws FileSystemException {
+        return executeRequest(request, true);
+    }
+    private HttpResponse executeRequest(final HttpUriRequest request, boolean releaseConnection) throws FileSystemException {
         HttpResponse response = null;
 
         try {
@@ -474,7 +478,7 @@ public class Webdav4FileObject extends Http4FileObject<Webdav4FileSystem> {
         } catch (final DavException e) {
             throw ExceptionConverter.generate(e);
         } finally {
-            if (request instanceof HttpRequestBase) {
+            if (releaseConnection && (request instanceof HttpRequestBase)) {
                 ((HttpRequestBase) request).releaseConnection();
             }
         }
@@ -496,11 +500,12 @@ public class Webdav4FileObject extends Http4FileObject<Webdav4FileSystem> {
 
     DavPropertySet getProperties(final GenericURLFileName name, final int type, final DavPropertyNameSet nameSet,
             final boolean addEncoding) throws FileSystemException {
+        HttpPropfind request = null;
         try {
             final String urlStr = toUrlString(name);
-            final HttpPropfind request = new HttpPropfind(urlStr, type, nameSet, DavConstants.DEPTH_0);
+            request = new HttpPropfind(urlStr, type, nameSet, DavConstants.DEPTH_0);
             setupRequest(request);
-            final HttpResponse res = executeRequest(request);
+            final HttpResponse res = executeRequest(request, false);
             if (request.succeeded(res)) {
                 final MultiStatus multiStatus = request.getResponseBodyAsMultiStatus(res);
                 final MultiStatusResponse response = multiStatus.getResponses()[0];
@@ -519,6 +524,16 @@ public class Webdav4FileObject extends Http4FileObject<Webdav4FileSystem> {
         } catch (final Exception e) {
             throw new FileSystemException("vfs.provider.webdav/get-property.error", e, getName(), name, type,
                     nameSet.getContent(), addEncoding);
+        } finally {
+            releaseConnection(request);
+        }
+    }
+
+    private void releaseConnection(HttpUriRequest request) {
+        if (request != null){
+            if (request instanceof HttpRequestBase) {
+                ((HttpRequestBase) request).releaseConnection();
+            }
         }
     }
 
@@ -544,9 +559,9 @@ public class Webdav4FileObject extends Http4FileObject<Webdav4FileSystem> {
      * @return The encoded URL String.
      */
     private String hrefString(final GenericURLFileName name) {
-        final GenericURLFileName newFile = new GenericURLFileName("http", name.getHostName(), name.getPort(), name.getDefaultPort(),
-                null, null, name.getPath(), name.getType(), name.getQueryString());
         try {
+            final GenericURLFileName newFile = new GenericURLFileName(getInternalURI().getScheme(), name.getHostName(), name.getPort(), name.getDefaultPort(),
+                    null, null, name.getPath(), name.getType(), name.getQueryString());
             return newFile.getURIEncoded(this.getUrlCharset());
         } catch (final Exception e) {
             return name.getURI();
@@ -614,9 +629,9 @@ public class Webdav4FileObject extends Http4FileObject<Webdav4FileSystem> {
             user = name.getUserName();
             password = name.getPassword();
         }
-        final GenericURLFileName newFile = new GenericURLFileName("http", name.getHostName(), name.getPort(), name.getDefaultPort(),
-                user, password, name.getPath(), name.getType(), name.getQueryString());
         try {
+            final GenericURLFileName newFile = new GenericURLFileName(getInternalURI().getScheme(), name.getHostName(), name.getPort(), name.getDefaultPort(),
+                    user, password, name.getPath(), name.getType(), name.getQueryString());
             return newFile.getURIEncoded(this.getUrlCharset());
         } catch (final Exception e) {
             return name.getURI();
