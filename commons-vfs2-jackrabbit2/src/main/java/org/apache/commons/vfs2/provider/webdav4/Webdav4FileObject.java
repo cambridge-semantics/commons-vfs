@@ -16,7 +16,7 @@
  */
 package org.apache.commons.vfs2.provider.webdav4;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.commons.vfs2.FileContentInfoFactory;
 import org.apache.commons.vfs2.FileNotFolderException;
 import org.apache.commons.vfs2.FileNotFoundException;
@@ -49,6 +51,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.DateUtils;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.FileEntity;
 import org.apache.jackrabbit.webdav.DavConstants;
 import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.MultiStatus;
@@ -88,7 +91,7 @@ public class Webdav4FileObject extends Http4FileObject<Webdav4FileSystem> {
         private final Webdav4FileObject file;
 
         public WebdavOutputStream(final Webdav4FileObject file) {
-            super(new ByteArrayOutputStream());
+            super(new DeferredFileOutputStream(16777216, "vfs", "tmp", FileUtils.getTempDirectory()));
             this.file = file;
         }
 
@@ -108,87 +111,95 @@ public class Webdav4FileObject extends Http4FileObject<Webdav4FileSystem> {
          */
         @Override
         protected void onClose() throws IOException {
-            final HttpEntity entity = new ByteArrayEntity(((ByteArrayOutputStream) out).toByteArray());
-            final GenericURLFileName fileName = (GenericURLFileName) getName();
-            final String urlStr = toUrlString(fileName);
-            if (builder.isVersioning(getFileSystem().getFileSystemOptions())) {
-                DavPropertySet set = null;
-                boolean fileExists = true;
-                boolean isCheckedIn = true;
-                try {
-                    set = getPropertyNames(fileName);
-                } catch (final FileNotFoundException fnfe) {
-                    fileExists = false;
-                }
-                if (fileExists && set != null) {
-                    if (set.contains(VersionControlledResource.CHECKED_OUT)) {
-                        isCheckedIn = false;
-                    } else if (!set.contains(VersionControlledResource.CHECKED_IN)) {
-                        DavProperty prop = set.get(VersionControlledResource.AUTO_VERSION);
-                        if (prop != null) {
-                            prop = getProperty(fileName, VersionControlledResource.AUTO_VERSION);
-                            if (DeltaVConstants.XML_CHECKOUT_CHECKIN.equals(prop.getValue())) {
-                                createVersion(urlStr);
+            DeferredFileOutputStream deferredStream = (DeferredFileOutputStream) out;
+            try {
+                final HttpEntity entity = deferredStream.isInMemory() ? new ByteArrayEntity(deferredStream.getData()) : new FileEntity(deferredStream.getFile());
+                final GenericURLFileName fileName = (GenericURLFileName) getName();
+                final String urlStr = toUrlString(fileName);
+                if (builder.isVersioning(getFileSystem().getFileSystemOptions())) {
+                    DavPropertySet set = null;
+                    boolean fileExists = true;
+                    boolean isCheckedIn = true;
+                    try {
+                        set = getPropertyNames(fileName);
+                    } catch (final FileNotFoundException fnfe) {
+                        fileExists = false;
+                    }
+                    if (fileExists && set != null) {
+                        if (set.contains(VersionControlledResource.CHECKED_OUT)) {
+                            isCheckedIn = false;
+                        } else if (!set.contains(VersionControlledResource.CHECKED_IN)) {
+                            DavProperty prop = set.get(VersionControlledResource.AUTO_VERSION);
+                            if (prop != null) {
+                                prop = getProperty(fileName, VersionControlledResource.AUTO_VERSION);
+                                if (DeltaVConstants.XML_CHECKOUT_CHECKIN.equals(prop.getValue())) {
+                                    createVersion(urlStr);
+                                }
                             }
                         }
                     }
-                }
-                if (fileExists && isCheckedIn) {
+                    if (fileExists && isCheckedIn) {
+                        try {
+                            final HttpCheckout request = new HttpCheckout(urlStr);
+                            setupRequest(request);
+                            executeRequest(request);
+                            isCheckedIn = false;
+                        } catch (final FileSystemException ex) {
+                            // Ignore the exception checking out.
+                        }
+                    }
+
                     try {
-                        final HttpCheckout request = new HttpCheckout(urlStr);
+                        final HttpPut request = new HttpPut(urlStr);
+                        request.setEntity(entity);
                         setupRequest(request);
                         executeRequest(request);
-                        isCheckedIn = false;
+                        setUserName(fileName, urlStr);
                     } catch (final FileSystemException ex) {
-                        // Ignore the exception checking out.
+                        if (!isCheckedIn) {
+                            try {
+                                final HttpCheckin request = new HttpCheckin(urlStr);
+                                setupRequest(request);
+                                executeRequest(request);
+                                isCheckedIn = true;
+                            } catch (final Exception e) {
+                                // Ignore the exception. Going to throw original.
+                            }
+                            throw ex;
+                        }
                     }
-                }
-
-                try {
+                    if (!fileExists) {
+                        createVersion(urlStr);
+                        try {
+                            final DavPropertySet props = getPropertyNames(fileName);
+                            isCheckedIn = !props.contains(VersionControlledResource.CHECKED_OUT);
+                        } catch (final FileNotFoundException fnfe) {
+                            // Ignore the error
+                        }
+                    }
+                    if (!isCheckedIn) {
+                        final HttpCheckin request = new HttpCheckin(urlStr);
+                        setupRequest(request);
+                        executeRequest(request);
+                    }
+                } else {
                     final HttpPut request = new HttpPut(urlStr);
                     request.setEntity(entity);
                     setupRequest(request);
                     executeRequest(request);
-                    setUserName(fileName, urlStr);
-                } catch (final FileSystemException ex) {
-                    if (!isCheckedIn) {
-                        try {
-                            final HttpCheckin request = new HttpCheckin(urlStr);
-                            setupRequest(request);
-                            executeRequest(request);
-                            isCheckedIn = true;
-                        } catch (final Exception e) {
-                            // Ignore the exception. Going to throw original.
-                        }
-                        throw ex;
-                    }
-                }
-                if (!fileExists) {
-                    createVersion(urlStr);
                     try {
-                        final DavPropertySet props = getPropertyNames(fileName);
-                        isCheckedIn = !props.contains(VersionControlledResource.CHECKED_OUT);
-                    } catch (final FileNotFoundException fnfe) {
-                        // Ignore the error
+                        setUserName(fileName, urlStr);
+                    } catch (final IOException e) {
+                        // Ignore the exception if unable to set the user name.
                     }
                 }
-                if (!isCheckedIn) {
-                    final HttpCheckin request = new HttpCheckin(urlStr);
-                    setupRequest(request);
-                    executeRequest(request);
-                }
-            } else {
-                final HttpPut request = new HttpPut(urlStr);
-                request.setEntity(entity);
-                setupRequest(request);
-                executeRequest(request);
-                try {
-                    setUserName(fileName, urlStr);
-                } catch (final IOException e) {
-                    // Ignore the exception if unable to set the user name.
+                ((DefaultFileContent) this.file.getContent()).resetAttributes();
+            }finally {
+                File outputFile = deferredStream.getFile();
+                if (!deferredStream.isInMemory() && outputFile != null && outputFile.exists()){
+                    outputFile.delete();
                 }
             }
-            ((DefaultFileContent) this.file.getContent()).resetAttributes();
         }
 
         private void setUserName(final GenericURLFileName fileName, final String urlStr) throws IOException {
